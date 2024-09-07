@@ -6,7 +6,7 @@ from spriteClass import GameSprite
 
 from random import randint
 
-# Player Class
+# chill class of GameSprite
 class Player(GameSprite):
     
     def controller(self):
@@ -19,26 +19,27 @@ class Player(GameSprite):
 
     def fire(self):
         bullet = Bullet(player_image='bullet.png', 
-                        player_x=self.rect.centerx, #center of sprite
-                        player_y=self.rect.top, #top of sprite
-                        size_x=15, 
-                        size_y=20,
-                        player_speed=3)
+                       player_x=rocket.rect.centerx, #center of x of srpite
+                       player_y=rocket.rect.top, #top of the sprite
+                       size_x=15, 
+                       size_y=20, 
+                       player_speed=5)
         bullet_group.add(bullet)
 
 # Bullet Class
 class Bullet(GameSprite):
     def update(self):
         self.rect.y -= self.speed
-        if self.rect.y < 0:
+        if self.rect.y <= 0:
             self.kill()
 
-# Enemy Class
+
+# child class of GameSprite
 class Enemy(GameSprite):
     def update(self):
         self.rect.y += self.speed
 
-        global missing
+        global missing  
 
         if self.rect.y > 500:
             self.rect.x = randint(5, 620)
@@ -59,19 +60,19 @@ mixer.music.load('space.ogg')
 # mixer.music.play()
 
 rocket = Player(player_image='rocket.png', 
-                player_x=5, 
-                player_y=420, 
-                size_x=65, 
-                size_y=65,
+                player_x=5 , 
+                player_y=420 , 
+                size_x= 65,
+                size_y= 65,
                 player_speed=5)
 
 ufo_group = sprite.Group()
 for i in range(1, 11):
     ufo = Enemy(player_image='ufo.png', 
                 player_x=randint(40, 620), 
-                player_y=5, 
-                size_x=80, 
-                size_y=50,
+                player_y= 5, 
+                size_x= 80,
+                size_y= 50,
                 player_speed= randint(1, 3) )
     ufo_group.add(ufo)
 
@@ -92,8 +93,7 @@ while not run:
         if e.type == QUIT:
             run = True
 
-        # fire
-        elif e.type == KEYDOWN:
+        if e.type == KEYDOWN:
             if e.key == K_SPACE:
                 rocket.fire()
 
@@ -109,6 +109,7 @@ while not run:
 
         rocket.reset(window)
         rocket.controller()
+
         ufo_group.update()
 
         bullet_group.update()
