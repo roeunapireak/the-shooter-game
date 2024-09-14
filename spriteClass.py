@@ -14,17 +14,3 @@ class GameSprite(sprite.Sprite):
         self.win_obj = win_obj
         self.win_obj.blit(self.image, (self.rect.x, self.rect.y))
 
-
-# # chill class of GameSprite
-# class Player(GameSprite):
-    
-#     def controller(self):
-#         keys_pressed = key.get_pressed()
-
-#         if keys_pressed[K_LEFT] and self.rect.x > 5:
-#             self.rect.x -= self.speed
-#         if keys_pressed[K_RIGHT] and self.rect.x < 635:
-#             self.rect.x += self.speed
-
-#     def fire(self):
-#        pass
