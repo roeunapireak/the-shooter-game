@@ -1,4 +1,4 @@
-#Create your own shooter
+# This is my shooter game
 
 from pygame import *
 
@@ -53,7 +53,7 @@ display.set_caption('Shooter Game')
 
 background = transform.scale(image.load('galaxy.jpg'), (700, 500))
 
-clock = time.Clock()
+# clock = time.Clock()
 
 mixer.init()
 mixer.music.load('space.ogg')
@@ -67,7 +67,7 @@ rocket = Player(player_image='rocket.png',
                 player_speed=5)
 
 ufo_group = sprite.Group()
-for i in range(1, 11):
+for i in range(1, 6):
     ufo = Enemy(player_image='ufo.png', 
                 player_x=randint(40, 620), 
                 player_y= 5, 
@@ -75,6 +75,11 @@ for i in range(1, 11):
                 size_y= 50,
                 player_speed= randint(1, 3) )
     ufo_group.add(ufo)
+
+asteroid_group = sprite.Group()
+for i in range(1,4):
+    asteroid = Enemy(player_image='asteroid.png', player_x=randint(40, 620),player_y= 5,size_x= 80,size_y= 50,player_speed= randint(1, 3) )
+    asteroid_group.add(asteroid)
 
 bullet_group = sprite.Group()
 
@@ -86,6 +91,11 @@ font.init()
 style = font.Font(None, 30)
 
 missing = 0
+score_number = 0
+
+font1 = font.Font(None, 80)
+win = font1.render('Victory!!!', True, (255, 255, 255))
+lose = font1.render('YOU LOSE!', True, (255, 255, 255))
 
 while not run:
 
@@ -105,7 +115,7 @@ while not run:
         missed = style.render('Missed: ' + str(missing), 1, (255, 255, 255))
         window.blit(missed, (5,5))
 
-        score = style.render('Scores: ', 1, (255, 255, 255))
+        score = style.render('Scores: ' + str(score_number), 1, (255, 255, 255))
         window.blit(score, (5,30))
 
 
@@ -113,13 +123,71 @@ while not run:
         rocket.controller()
 
         ufo_group.update()
+ 
+        asteroid_group.update()
 
         bullet_group.update()
 
         ufo_group.draw(window)
 
+        asteroid_group.draw(window)
+
         bullet_group.draw(window)
 
         display.update()
 
-        time.delay(50) 
+        # colision between bullet and UFO
+        collides = sprite.groupcollide(ufo_group, bullet_group, True, True)
+        for col in collides: 
+            ufo = Enemy(player_image='ufo.png', 
+                player_x=randint(40, 620), 
+                player_y= 5, 
+                size_x= 80,
+                size_y= 50,
+                player_speed= randint(1, 3) )
+            ufo_group.add(ufo)
+            score_number += 1
+
+        if missing >= 10 or sprite.spritecollide(rocket, ufo_group, False) or sprite.spritecollide(rocket, asteroid_group, False):
+            finish = True
+            window.blit(lose, (200, 200))
+        
+        if score_number >= 5:
+            finish = True
+            window.blit(win, (200, 200))
+
+        display.update()
+        
+    ## bonus: automatic restart the game.
+    else:
+        for b in bullet_group:
+            b.kill()
+        for u in ufo_group:
+            u.kill()
+        for ast in asteroid_group:
+            ast.kill()
+
+        missing = 0
+        score_number = 0
+        finish = False
+
+        time.delay(3000) 
+
+        for i in range(1, 6):
+            ufo = Enemy(player_image='ufo.png', 
+                        player_x=randint(40, 620), 
+                        player_y= 5, 
+                        size_x= 80,
+                        size_y= 50,
+                        player_speed= randint(1, 3) )
+            ufo_group.add(ufo)
+
+        for i in range(1,4):
+            asteroid = Enemy(player_image='asteroid.png',
+                        player_x=randint(40, 620),
+                        player_y= 5,
+                        size_x= 80,
+                        size_y= 50,
+                        player_speed= randint(1, 3) )
+            asteroid_group.add(asteroid) 
+    time.delay(50) 
