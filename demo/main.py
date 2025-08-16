@@ -3,6 +3,13 @@ from pygame import *
 from sprites import GameSprite, Player
 from random import randint
 
+
+mixer.init()
+mixer.music.load('space.ogg')
+# mixer.music.play()
+
+fire = mixer.Sound('fire.ogg')
+
 lost = 0 
 score = 0 
 class Enemy(GameSprite):
@@ -55,7 +62,9 @@ for i in range(3):
 font.init()
 style = font.Font(None, 20)
 style2 = font.Font(None, 60)
+style3 = font.Font(None, 40)
 
+num_fire = 0 
 
 game = False
 
@@ -70,8 +79,14 @@ while not game:
 
         if e.type == KEYDOWN:
             if e.key == K_SPACE:
-                player.fire()
-    
+                if num_fire < 5:
+                    player.fire()
+                    fire.play()
+                    num_fire += 1
+                else:
+                    time.delay(500)
+                    num_fire = 0
+                
 
     # Game sense
     if finish:
@@ -95,6 +110,10 @@ while not game:
 
         text_score = style.render("Scores: "+str(score), 1, (255, 255, 255))
         window.blit(text_score, (10,50))
+
+        if num_fire >= 5:
+            reload_fire = style3.render('Wait, reload...',1, (255, 0, 0) )
+            window.blit(reload_fire, (700/2-50,500-50))
 
         collide = sprite.groupcollide(monsters, player.bullets, True, True) 
 

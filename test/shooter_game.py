@@ -9,7 +9,7 @@ from spriteClass import Player
 window = display.set_mode((700,500))
 display.set_caption('Shooter Game')
 
-background = transform.scale(image.load('galaxy.jpg'), (700, 500))
+background = transform.scale(image.load('../images/galaxy.jpg'), (700, 500))
 
 clock = time.Clock()
 
